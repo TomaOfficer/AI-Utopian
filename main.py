@@ -7,7 +7,10 @@ from langchain.schema import AIMessage, HumanMessage, SystemMessage
 
 app = Flask(__name__)
 
-chat = ChatOpenAI()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+chat = ChatOpenAI(model_name="gpt-4",
+                  temperature=.2,
+                  openai_api_key=openai_api_key)
 
 
 def chat_with_ward(user_input):
