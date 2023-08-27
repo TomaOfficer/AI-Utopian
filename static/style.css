@@ -1,0 +1,23 @@
+body {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 4em 20px;
+  font-size: 18px;
+  line-height: 1.5em;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+}
+input[type="text"] {
+  padding: 5px;
+  margin: 0 0 .5em;
+  font-size: 1em;
+}
+input[type="submit"] {
+  padding: 5px;
+  font-size: 16px;
+}
+h1 {
+  line-height: 1.5em;
+}
