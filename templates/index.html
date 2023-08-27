@@ -3,7 +3,7 @@
 <head>
     <title>My Home Page</title>
 </head>
-<body>
+<body style="max-width: 560px; margin: 0 auto; font-size: 18px; padding: 4em 0; line-height: 1.5em;">
     <h1>Welcome to My Home Page</h1>
     <p>This is a super simple index.html page.</p>
     <form action="/chat" method="post">
@@ -12,7 +12,7 @@
       <input type="submit" value="Submit">
     </form>
     {% if ward_response %}
-      <p>Ward: {{ ward_response }}</p>
+      <div>Ward: {{ ward_response | safe }}</div>
     {% endif %}
 </body>
 </html>
