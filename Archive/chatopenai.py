@@ -1,32 +1,55 @@
+from flask import Flask, render_template, request
+import requests
+import os
+import markdown
 from langchain.chains import ConversationChain
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 
-# Initialize the chat model, an instance of the ChatOpenAI class. Or, another way to say that, create a new variable called "chat" that is equal to a function pulled from Langchain called ChatOpenAI.
-chat = ChatOpenAI()
+app = Flask(__name__)
+
+openai_api_key = os.getenv("OPENAI_API_KEY")
+chat = ChatOpenAI(model_name="gpt-4",
+                  temperature=.2,
+                  openai_api_key=openai_api_key)
 
 
-# Function to define prompt
 def chat_with_ward(user_input):
   messages = [
-      SystemMessage(content="You are a formal chatbot named Ward."),
+      SystemMessage(
+          content="You are Ward, a formal, butler agent. You love your job "
+          "You speak as a tour guide with a focus on the historical narrative of the user's "
+          "location. Your mission is to deliver a riveting, yet sober, guided tour."
+          "Focus on the end-user's exact location, down "
+          "to the specific street or building. Start with quick statement about"
+          "whether or not you have engough information to say something interesting. "
+          "Then launch into the notable features that form the body of your narrative. "
+          "Conclude with a invitation to learn more about something you've said. "
+          "If you cannot gather sufficient information for the "
+          "exact location, prompt the end-user to inquire if they would like to "
+          "expand their horizons to a broader but immediate area. Keep the narrative "
+          "limited to three key points or scenes. Use markdown to create dramatic "
+          "emphasis and readability."),
       HumanMessage(content=user_input)
   ]
-  # In Python, objects can be made callable, meaning they can be used like functions. This is achieved by defining a special method called __call__ within the class. Calling chat(messages) invokes the __call__ method of the ChatOpenAI class (or similar method depending on the class implementation). This method processes the messages and returns a response object.
   response = chat(messages)
-  # The return statement in a function is used to send a value back to the place where the function was called. In this case, return response.content sends the content of the response back to the caller. The content of the response is assigned to ward_response. Later, when we print ward_response, we will see the response from Ward.
   return response.content
 
 
-# Main function for user interaction
-def main():
-  print("I am Ward. Let's chat.")
-  while True:
-    #The input function is used to take input from the user.
-    user_input = input("You: ")
-    ward_response = chat_with_ward(user_input)
-    print(f"Ward: {ward_response}")
+@app.route('/')
+def home():
+  return render_template('index.html')
+
+
+@app.route('/chat', methods=["POST"])
+def handle_chat():
+  user_input = request.form['user_input']
+  ward_response = chat_with_ward(user_input)
+
+  # convert markdown to HTML
+  ward_response_html = markdown.markdown(ward_response)
+  return render_template('index.html', ward_response=ward_response_html)
 
 
 if __name__ == "__main__":
-  main()
+  app.run(host='0.0.0.0', port=8080)
