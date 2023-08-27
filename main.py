@@ -1,30 +1,25 @@
-from langchain import OpenAI
-from langchain.chains import LLMMathChain
 import os
-from langchain.agents import Tool
-from langchain.agents import load_tools
-from langchain.agents import initialize_agent
+from langchain import OpenAI
+from langchain.agents import Tool, load_tools, initialize_agent
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
+
+prompt_template = PromptTemplate.from_template(
+    "Tell me a {adjective} joke about {content}.")
+prompt_template.format(adjective="funny", content="chickens")
 
 llm = OpenAI(openai_api_key=openai_api_key,
              temperature=0,
              model_name="text-davinci-003")
 
-llm_math = LLMMathChain(llm=llm)
+llm_chain = LLMChain(llm=llm, prompt=prompt_template)
 
-# initialize the math tool
-math_tool = Tool(
-    name='Calculator',
-    func=llm_math.run,
-    description='Useful for when you need to answer questions about math.')
+input_data = {'adjective': 'funny', 'content': 'chickens'}
 
-tools = load_tools(['llm-math'], llm=llm)
+# Run the chain
+response = llm_chain.run(input_data)
 
-zero_shot_agent = initialize_agent(agent="zero-shot-react-description",
-                                   tools=tools,
-                                   llm=llm,
-                                   verbose=True,
-                                   max_iterations=3)
-
-zero_shot_agent("what is (4.5*2.1)^2.2?")
+# Print the response
+print(response)
