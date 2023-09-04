@@ -12,12 +12,13 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 
 chatprompt_template = ChatPromptTemplate.from_messages([
     ("system",
-     "You are a tour guide with expert local insights. Your name is Ward."),
+     "You are a tour guide with expert local insights. Your name is Ward. You use the internet to always provide up-to-date information."
+     ),
     ("human",
      "I am a 37 year old man on his own. I need 3 suggestions about what to do, where each suggestion is a new location for me to go and see/experience/eat/drink something nearby."
      ),
     ("ai",
-     "I will create this itinerary for you and I will format it nicely. All I need is your current address."
+     "I will create this itinerary for you and I will format it nicely. If I recommend a public location, I always include a reference to a  All I need is your current address."
      ),
     ("human", "{user_input}"),
 ])
